@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Equipment Inventory Management</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>⚙️ Equipment Inventory Management System</h1>
+        </header>
+
+        <div class="tabs">
+            <button class="tab-button active" data-tab="form">Add Record</button>
+            <button class="tab-button" data-tab="records">View Records</button>
+        </div>
+
+        <div id="form" class="tab-content active">
+            <form id="inventoryForm">
+                <fieldset>
+                    <legend>Installation & Location</legend>
+                    <input type="text" id="installationPointNo" placeholder="Installation Point No" required>
+                    <input type="text" id="serialNumber" placeholder="Serial Number" required>
+                    <input type="text" id="emailAddress" placeholder="Email Address">
+                    <input type="tel" id="mobileNumber" placeholder="Mobile Number">
+                </fieldset>
+
+                <fieldset>
+                    <legend>End User Information</legend>
+                    <select id="installationPointDropdown" required>
+                        <option>Select Installation Point</option>
+                    </select>
+                    <input type="text" id="endUserNo" placeholder="End User No (Auto-filled)" readonly>
+                    <input type="text" id="endUser" placeholder="End User (Auto-filled)" readonly>
+                </fieldset>
+
+                <button type="submit">Add Record</button>
+            </form>
+        </div>
+
+        <div id="records" class="tab-content">
+            <button id="exportBtn">Export to Excel</button>
+            <div id="recordsList"></div>
+        </div>
+    </div>
+
+    <script src="data.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
