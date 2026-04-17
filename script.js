@@ -218,8 +218,10 @@ function recalculatePotentialSales() {
     const spareStr = document.getElementById('sparePartsPerYear').value || '';
     const qty = parseFloat(document.getElementById('quantity').value) || 0;
 
-    // Parse numeric value from spare string like "150,00 €"
-    const numericSpare = parseFloat(spareStr.replace(/[^\d.,]/g, '').replace(',', '.')) || 0;
+    // Parse numeric value from spare string like "150,00 €" or "150.00 €"
+    // Strip all non-numeric characters except the last comma or period (decimal separator)
+    const spareClean = spareStr.replace(/[^\d]/g, '').slice(0, -2) + '.' + spareStr.replace(/[^\d]/g, '').slice(-2);
+    const numericSpare = parseFloat(spareClean) || 0;
     const total = numericSpare * qty;
 
     const currencyEl = document.getElementById('currency');
@@ -394,24 +396,52 @@ function displayRecords() {
         { key: 'potentialOrderSales', label: 'Pot. Sales' },
     ];
 
-    let html = '<div class="table-scroll"><table class="records-table"><thead><tr>';
-    columns.forEach(c => { html += '<th>' + escapeHtml(c.label) + '</th>'; });
-    html += '<th>Actions</th></tr></thead><tbody>';
+    const scrollDiv = document.createElement('div');
+    scrollDiv.className = 'table-scroll';
+
+    const table = document.createElement('table');
+    table.className = 'records-table';
+
+    // Build header
+    const thead = document.createElement('thead');
+    const headerRow = document.createElement('tr');
+    columns.forEach(c => {
+        const th = document.createElement('th');
+        th.textContent = c.label;
+        headerRow.appendChild(th);
+    });
+    const actionTh = document.createElement('th');
+    actionTh.textContent = 'Actions';
+    headerRow.appendChild(actionTh);
+    thead.appendChild(headerRow);
+    table.appendChild(thead);
+
+    // Build body
+    const tbody = document.createElement('tbody');
 
     filtered.forEach(r => {
-        html += '<tr>';
+        const row = document.createElement('tr');
         columns.forEach(c => {
+            const td = document.createElement('td');
             const v = r[c.key] || '';
-            let cellClass = '';
-            if (c.key === 'priority') cellClass = ' class="priority-' + v.toLowerCase() + '"';
-            html += '<td' + cellClass + '>' + escapeHtml(v) + '</td>';
+            if (c.key === 'priority') td.className = 'priority-' + v.toLowerCase();
+            td.textContent = v;
+            row.appendChild(td);
         });
-        html += '<td><button class="btn-icon-danger" onclick="deleteRecord(' + r.id + ')" title="Delete record">🗑️</button></td>';
-        html += '</tr>';
+        const actionTd = document.createElement('td');
+        const delBtn = document.createElement('button');
+        delBtn.className = 'btn-icon-danger';
+        delBtn.title = 'Delete record';
+        delBtn.textContent = '🗑️';
+        delBtn.addEventListener('click', () => deleteRecord(r.id));
+        actionTd.appendChild(delBtn);
+        row.appendChild(actionTd);
+        tbody.appendChild(row);
     });
 
-    html += '</tbody></table></div>';
-    container.innerHTML = html;
+    table.appendChild(tbody);
+    scrollDiv.appendChild(table);
+    container.appendChild(scrollDiv);
 }
 
 function deleteRecord(id) {

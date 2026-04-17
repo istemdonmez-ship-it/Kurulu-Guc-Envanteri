@@ -223,10 +223,10 @@ const endUserDatabase = [
     { installationPoint: '7988001', endUserNo: '900191101', endUserName: 'SEK - ULUSAL SÜT VE BESİN MADDELERİ' },
     { installationPoint: '7988002', endUserNo: '900191102', endUserName: 'PINAR SÜT MAMÜLLERİ SANAYİİ A.Ş.' },
     { installationPoint: '7988003', endUserNo: '900191103', endUserName: 'DANONE - TÜRKIYE GIDA A.Ş.' },
-    { installationPoint: '7988100', endUserNo: '900192101', endUserName: 'ULKer BiSKÜVİ SANAYİ A.Ş.' },
+    { installationPoint: '7988100', endUserNo: '900192101', endUserName: 'ÜLKER BİSKÜVİ SANAYİ A.Ş.' },
     { installationPoint: '7988101', endUserNo: '900192102', endUserName: 'ETİ GIDA SANAYİ VE TİCARET A.Ş.' },
     { installationPoint: '7988200', endUserNo: '900193101', endUserName: 'KOSKA HELVACISI - İSTANBUL' },
-    { installationPoint: '7988300', endUserNo: '900194101', endUserName: 'SIMİT SARAYI - İSTANBUL MERKEZİ ÜRETİM TESİSİ' },
+    { installationPoint: '7988300', endUserNo: '900194101', endUserName: 'SİMİT SARAYI - İSTANBUL MERKEZİ ÜRETİM TESİSİ' },
 
     // --- Textile ---
     { installationPoint: '7989001', endUserNo: '900195101', endUserName: 'ISKO DENIM - BURSA DOKUMA FABRİKASI' },
@@ -304,7 +304,7 @@ const endUserDatabase = [
     { installationPoint: '30100', endUserNo: '1000201001', endUserName: 'BOTAS International Limited - Iraq' },
     { installationPoint: '30101', endUserNo: '1000201002', endUserName: 'Iraq Crude Oil Export Terminal - Basra' },
     { installationPoint: '30200', endUserNo: '1000202001', endUserName: 'Saudi Aramco - Ras Tanura Refinery' },
-    { installationPoint: '30300', endUserNo: '1000203001', endUserName: 'Quatar Petrochemical Company' },
+    { installationPoint: '30300', endUserNo: '1000203001', endUserName: 'Qatar Petrochemical Company' },
     { installationPoint: '30400', endUserNo: '1000204001', endUserName: 'ADNOC - Abu Dhabi National Oil Company' },
     { installationPoint: '30500', endUserNo: '1000205001', endUserName: 'OCP Group - Morocco Phosphate' },
     { installationPoint: '30600', endUserNo: '1000206001', endUserName: 'Sonangol - Angola' },
