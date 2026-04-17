@@ -3,46 +3,306 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Equipment Inventory Management</title>
+    <title>Kurulu Güç Envanteri - Equipment Inventory Management</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
         <header>
             <h1>⚙️ Equipment Inventory Management System</h1>
+            <p class="subtitle">Kurulu Güç Envanteri - Professional Data Recording</p>
         </header>
 
         <div class="tabs">
-            <button class="tab-button active" data-tab="form">Add Record</button>
-            <button class="tab-button" data-tab="records">View Records</button>
+            <button class="tab-button active" data-tab="form">➕ Add Record</button>
+            <button class="tab-button" data-tab="records">📋 View Records</button>
+            <button class="tab-button" data-tab="settings">⚙️ Settings</button>
         </div>
 
+        <!-- TAB 1: ADD RECORD -->
         <div id="form" class="tab-content active">
-            <form id="inventoryForm">
+            <form id="inventoryForm" novalidate>
+
+                <!-- SECTION 1: Contact & Visit Information -->
                 <fieldset>
-                    <legend>Installation & Location</legend>
-                    <input type="text" id="installationPointNo" placeholder="Installation Point No" required>
-                    <input type="text" id="serialNumber" placeholder="Serial Number" required>
-                    <input type="text" id="emailAddress" placeholder="Email Address">
-                    <input type="tel" id="mobileNumber" placeholder="Mobile Number">
+                    <legend>📞 Section 1: Contact &amp; Visit Information</legend>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="salesRepName">Sales Representative Name</label>
+                            <input type="text" id="salesRepName" placeholder="Enter sales rep name">
+                        </div>
+                        <div class="form-group">
+                            <label for="visitDate">Date of Visit</label>
+                            <input type="date" id="visitDate">
+                        </div>
+                        <div class="form-group">
+                            <label for="visitType">Visit Type</label>
+                            <select id="visitType">
+                                <option value="">-- Select Visit Type --</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="distributionChannel">Distribution Channel</label>
+                            <select id="distributionChannel">
+                                <option value="">-- Select Channel --</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="emailAddress">Email Address</label>
+                            <input type="email" id="emailAddress" placeholder="contact@company.com">
+                        </div>
+                        <div class="form-group">
+                            <label for="mobileNumber">Mobile Number</label>
+                            <input type="tel" id="mobileNumber" placeholder="+90 5XX XXX XX XX">
+                        </div>
+                    </div>
                 </fieldset>
 
+                <!-- SECTION 2: End User Information -->
                 <fieldset>
-                    <legend>End User Information</legend>
-                    <select id="installationPointDropdown" required>
-                        <option>Select Installation Point</option>
-                    </select>
-                    <input type="text" id="endUserNo" placeholder="End User No (Auto-filled)" readonly>
-                    <input type="text" id="endUser" placeholder="End User (Auto-filled)" readonly>
+                    <legend>🏭 Section 2: End User Information</legend>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="installationPointDropdown">Installation Point No <span class="required">*</span></label>
+                            <select id="installationPointDropdown" required>
+                                <option value="">-- Select Installation Point --</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="endUserNo">End User No</label>
+                            <input type="text" id="endUserNo" placeholder="Auto-filled from selection" readonly class="auto-filled">
+                        </div>
+                        <div class="form-group span-2">
+                            <label for="endUser">End User Name</label>
+                            <input type="text" id="endUser" placeholder="Auto-filled from selection" readonly class="auto-filled">
+                        </div>
+                        <div class="form-group">
+                            <label for="country">Country</label>
+                            <select id="country">
+                                <option value="">-- Select Country --</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="region">Region</label>
+                            <select id="region">
+                                <option value="">-- Select Region --</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="section-actions">
+                        <button type="button" id="addNewEndUserBtn" class="btn-secondary">➕ Add New End User</button>
+                    </div>
                 </fieldset>
 
-                <button type="submit">Add Record</button>
+                <!-- SECTION 3: Location & Industry -->
+                <fieldset>
+                    <legend>📍 Section 3: Location &amp; Industry</legend>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="city">City</label>
+                            <select id="city">
+                                <option value="">-- Select City --</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="district">District / Area</label>
+                            <input type="text" id="district" placeholder="Enter district or area">
+                        </div>
+                        <div class="form-group">
+                            <label for="industry">Industry</label>
+                            <select id="industry">
+                                <option value="">-- Select Industry --</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="application">Application</label>
+                            <select id="application">
+                                <option value="">-- Select Application --</option>
+                            </select>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <!-- SECTION 4: Equipment Details -->
+                <fieldset>
+                    <legend>🔧 Section 4: Equipment Details</legend>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="productModel">Product Model <span class="required">*</span></label>
+                            <select id="productModel" required>
+                                <option value="">-- Select Product Model --</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="productLineNo">Product Line No</label>
+                            <input type="text" id="productLineNo" placeholder="Auto-filled" readonly class="auto-filled">
+                        </div>
+                        <div class="form-group">
+                            <label for="productLineName">Name of Product Line</label>
+                            <input type="text" id="productLineName" placeholder="Auto-filled" readonly class="auto-filled">
+                        </div>
+                        <div class="form-group">
+                            <label for="productLineType">Product Line Type</label>
+                            <input type="text" id="productLineType" placeholder="Auto-filled" readonly class="auto-filled">
+                        </div>
+                        <div class="form-group">
+                            <label for="serialNumber">Serial Number <span class="required">*</span></label>
+                            <input type="text" id="serialNumber" placeholder="Enter serial number" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="yearOfManufacture">Year of Manufacture</label>
+                            <input type="number" id="yearOfManufacture" placeholder="e.g. 2020" min="1950" max="2099">
+                        </div>
+                        <div class="form-group">
+                            <label for="productType">Product Type</label>
+                            <select id="productType">
+                                <option value="">-- Select Product Type --</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="mechanicalSeal">Mechanical Seal</label>
+                            <select id="mechanicalSeal">
+                                <option value="">-- Select Seal Type --</option>
+                            </select>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <!-- SECTION 5: Sales & Commercial -->
+                <fieldset>
+                    <legend>💰 Section 5: Sales &amp; Commercial Information</legend>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="sparePartsPerYear">Spare Sales Per Year (Auto)</label>
+                            <input type="text" id="sparePartsPerYear" placeholder="Auto-filled from model" readonly class="auto-filled">
+                        </div>
+                        <div class="form-group">
+                            <label for="quantity">Quantity</label>
+                            <input type="number" id="quantity" placeholder="0" min="0" value="">
+                        </div>
+                        <div class="form-group">
+                            <label for="potentialOrderSales">Potential Order Sales (Calc.)</label>
+                            <input type="text" id="potentialOrderSales" placeholder="Auto-calculated" readonly class="auto-filled highlight">
+                        </div>
+                        <div class="form-group">
+                            <label for="currency">Currency</label>
+                            <select id="currency">
+                                <option value="">-- Select Currency --</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="orderStatus">Order Status</label>
+                            <select id="orderStatus">
+                                <option value="">-- Select Status --</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="followUpDate">Follow-up Date</label>
+                            <input type="date" id="followUpDate">
+                        </div>
+                    </div>
+                </fieldset>
+
+                <!-- SECTION 6: Notes & Priority -->
+                <fieldset>
+                    <legend>📝 Section 6: Notes &amp; Priority</legend>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="priority">Priority</label>
+                            <select id="priority">
+                                <option value="">-- Select Priority --</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="nextAction">Next Action</label>
+                            <input type="text" id="nextAction" placeholder="Describe the next step">
+                        </div>
+                        <div class="form-group span-2">
+                            <label for="technicalNotes">Technical Notes</label>
+                            <textarea id="technicalNotes" rows="3" placeholder="Enter any technical observations or notes..."></textarea>
+                        </div>
+                        <div class="form-group span-2">
+                            <label for="applicationNotes">Application / General Notes</label>
+                            <textarea id="applicationNotes" rows="3" placeholder="Enter application details or general observations..."></textarea>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">✅ Add Record</button>
+                    <button type="button" id="resetFormBtn" class="btn-danger">🗑️ Reset Form</button>
+                </div>
             </form>
         </div>
 
+        <!-- TAB 2: VIEW RECORDS -->
         <div id="records" class="tab-content">
-            <button id="exportBtn">Export to Excel</button>
-            <div id="recordsList"></div>
+            <div class="records-toolbar">
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="🔍 Search records...">
+                </div>
+                <div class="records-actions">
+                    <button id="exportBtn" class="btn-success">📊 Export to Excel (CSV)</button>
+                    <button id="clearAllBtn" class="btn-danger">🗑️ Clear All Records</button>
+                </div>
+            </div>
+            <div id="recordsCount" class="records-count"></div>
+            <div id="recordsList" class="records-table-wrapper"></div>
+        </div>
+
+        <!-- TAB 3: SETTINGS -->
+        <div id="settings" class="tab-content">
+            <div class="settings-section">
+                <h3>⚙️ Application Settings</h3>
+                <div class="settings-group">
+                    <h4>Data Management</h4>
+                    <p>Records are saved in your browser's local storage and persist between sessions.</p>
+                    <div class="settings-actions">
+                        <button id="exportDataBtn" class="btn-primary">💾 Backup Data (JSON)</button>
+                        <button id="importDataBtn" class="btn-secondary">📂 Restore from Backup</button>
+                        <input type="file" id="importFile" accept=".json" style="display:none">
+                    </div>
+                </div>
+                <div class="settings-group">
+                    <h4>End User Database</h4>
+                    <p id="endUserCount">Loading...</p>
+                    <button id="manageEndUsersBtn" class="btn-secondary">👥 Manage End Users</button>
+                </div>
+                <div class="settings-group">
+                    <h4>About</h4>
+                    <p>Equipment Inventory Management System - Kurulu Güç Envanteri</p>
+                    <p>Version 2.0 | Built for professional field data collection</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: Add New End User -->
+    <div id="addEndUserModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle" style="display:none">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h2 id="modalTitle">➕ Add New End User</h2>
+                <button class="modal-close" id="closeModalBtn" aria-label="Close">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="newInstallationPoint">Installation Point No <span class="required">*</span></label>
+                    <input type="text" id="newInstallationPoint" placeholder="e.g. 7922947">
+                </div>
+                <div class="form-group">
+                    <label for="newEndUserNo">End User No <span class="required">*</span></label>
+                    <input type="text" id="newEndUserNo" placeholder="e.g. 900181457">
+                </div>
+                <div class="form-group">
+                    <label for="newEndUserName">End User Name <span class="required">*</span></label>
+                    <input type="text" id="newEndUserName" placeholder="e.g. Company Name A.Ş.">
+                </div>
+                <div id="modalError" class="modal-error" style="display:none"></div>
+            </div>
+            <div class="modal-footer">
+                <button id="saveNewEndUserBtn" class="btn-primary">✅ Save End User</button>
+                <button id="cancelModalBtn" class="btn-secondary">Cancel</button>
+            </div>
         </div>
     </div>
 
