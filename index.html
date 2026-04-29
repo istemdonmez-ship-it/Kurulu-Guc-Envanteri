@@ -20,6 +20,110 @@ tbody tr:nth-child(even) { background-color: #f2f2f2; }
 footer { background: #60a5fa; color: #aaa; padding: 20px; font-family: Arial, sans-serif; }
 footer span { color: #000; }
 
+/* --- Manual Input Panel --- */
+.manual-input-panel {
+    background: white;
+    border: 3px solid #dc3545;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(220, 53, 69, 0.2);
+}
+.manual-input-panel h3 {
+    margin-top: 0;
+    color: #dc3545;
+    text-align: center;
+}
+.input-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+}
+.input-row label {
+    font-weight: bold;
+    color: #000080;
+    background: #e7f3ff;
+    padding: 6px 12px;
+    border: 2px solid #0055ff;
+    border-radius: 4px;
+    min-width: 150px;
+    text-align: center;
+}
+.input-row input {
+    flex: 1;
+    min-width: 200px;
+    padding: 8px;
+    border: 2px solid #0055ff;
+    border-radius: 4px;
+    font-size: 14px;
+}
+.input-row input:focus {
+    outline: none;
+    border-color: #004400;
+    box-shadow: 0 0 5px rgba(0, 68, 0, 0.3);
+}
+.button-row {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 16px;
+    flex-wrap: wrap;
+}
+.btn-create-folder {
+    background: #28a745 !important;
+    color: white !important;
+    padding: 10px 20px !important;
+    border: none !important;
+    border-radius: 4px !important;
+    cursor: pointer !important;
+    font-size: 14px !important;
+    font-weight: bold !important;
+    width: auto !important;
+    margin: 0 !important;
+    transition: all 0.3s ease;
+}
+.btn-create-folder:hover {
+    background: #218838 !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(40, 167, 69, 0.3);
+}
+.btn-clear {
+    background: #6c757d !important;
+    color: white !important;
+    padding: 10px 20px !important;
+    border: none !important;
+    border-radius: 4px !important;
+    cursor: pointer !important;
+    font-size: 14px !important;
+    font-weight: bold !important;
+    width: auto !important;
+    margin: 0 !important;
+}
+.btn-clear:hover {
+    background: #5a6268 !important;
+}
+.status-message {
+    text-align: center;
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 4px;
+    display: none;
+}
+.status-message.success {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+    display: block;
+}
+.status-message.error {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+    display: block;
+}
+
 /* --- Sticky Notes Panel --- */
 .page-header-row {
     display: flex;
@@ -151,6 +255,17 @@ footer span { color: #000; }
 @media (max-width: 640px) {
     .page-header-row { flex-direction: column; }
     .sticky-notes-panel { width: 100%; }
+    .input-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .input-row label {
+        text-align: left;
+        min-width: auto;
+    }
+    .input-row input {
+        min-width: auto;
+    }
 }
 </style>
 </head>
@@ -172,6 +287,39 @@ footer span { color: #000; }
     </div>
   </div>
 </div>
+
+<!-- Manual Input Panel -->
+<div class="manual-input-panel">
+  <h3>📋 Klasör Oluşturma Paneli</h3>
+  
+  <div class="input-row">
+    <label>Seri No:</label>
+    <input type="text" id="seriNo" placeholder="Seri numarası girin..." />
+  </div>
+  
+  <div class="input-row">
+    <label>Son Kullanıcı:</label>
+    <input type="text" id="sonKullanci" placeholder="Son kullanıcı adı girin..." />
+  </div>
+  
+  <div class="input-row">
+    <label>Ürün Modeli:</label>
+    <input type="text" id="urunModeli" placeholder="Ürün modeli girin..." />
+  </div>
+  
+  <div class="input-row">
+    <label>Klasör Oluştur ve Aç:</label>
+    <input type="text" id="klasorYolu" placeholder="Klasör yolunu seçin (C:\\Pompa_Envanteri vb.)" />
+  </div>
+  
+  <div class="button-row">
+    <button class="btn-create-folder" id="btnCreateFolder">📁 Klasör Oluştur</button>
+    <button class="btn-clear" id="btnClear">🔄 Temizle</button>
+  </div>
+  
+  <div class="status-message" id="statusMessage"></div>
+</div>
+
 <input type="file" id="fileInput" accept=".csv, .xlsx"/>
 <input type="text" id="searchInput" placeholder="Aramak istediğiniz değeri yazın..."/>
 <button id="exportBtn">Raporu Excel olarak indir</button>
@@ -184,6 +332,72 @@ footer span { color: #000; }
 let allSheetsData = {};
 let sheetNames = [];
 
+// ---- Folder Creation Functionality ----
+document.getElementById('btnCreateFolder').addEventListener('click', function(){
+    const seriNo = document.getElementById('seriNo').value.trim();
+    const sonKullanci = document.getElementById('sonKullanci').value.trim();
+    const urunModeli = document.getElementById('urunModeli').value.trim();
+    const klasorYolu = document.getElementById('klasorYolu').value.trim();
+    
+    const statusMsg = document.getElementById('statusMessage');
+    
+    if(!seriNo || !sonKullanci || !urunModeli || !klasorYolu){
+        statusMsg.className = 'status-message error';
+        statusMsg.textContent = '❌ Lütfen tüm alanları doldurunuz!';
+        return;
+    }
+    
+    // Create folder name: SerialNo_SonKullanci_UrunModeli
+    const folderName = `${seriNo}_${sonKullanci}_${urunModeli}`.replace(/\s+/g, '_');
+    const fullPath = `${klasorYolu}\\${folderName}`;
+    
+    // Note: This is a browser-based limitation - we can't directly create folders on the user's PC
+    // Instead, we'll provide instructions and save data to localStorage
+    try {
+        // Save folder creation request to localStorage for potential Electron/Node.js backend
+        const folderData = {
+            serialNo: seriNo,
+            endUser: sonKullanci,
+            productModel: urunModeli,
+            basePath: klasorYolu,
+            folderName: folderName,
+            fullPath: fullPath,
+            createdAt: new Date().toISOString()
+        };
+        
+        let folderHistory = JSON.parse(localStorage.getItem('folderHistory') || '[]');
+        folderHistory.push(folderData);
+        localStorage.setItem('folderHistory', JSON.stringify(folderHistory));
+        
+        statusMsg.className = 'status-message success';
+        statusMsg.innerHTML = `✅ <strong>Klasör bilgisi kaydedildi!</strong><br>
+        Oluşturulacak Klasör Adı: <strong>${folderName}</strong><br>
+        Tam Yol: <strong>${fullPath}</strong><br>
+        <em>Not: Tarayıcı güvenlik nedeniyle klasör otomatik olarak oluşturulamaz. Lütfen klasörü manuel olarak oluşturunuz veya masaüstü uygulaması kullanınız.</em>`;
+        
+        // Clear inputs after success
+        setTimeout(() => {
+            document.getElementById('seriNo').value = '';
+            document.getElementById('sonKullanci').value = '';
+            document.getElementById('urunModeli').value = '';
+        }, 1500);
+        
+    } catch(err){
+        statusMsg.className = 'status-message error';
+        statusMsg.textContent = '❌ Hata: ' + err.message;
+    }
+});
+
+document.getElementById('btnClear').addEventListener('click', function(){
+    document.getElementById('seriNo').value = '';
+    document.getElementById('sonKullanci').value = '';
+    document.getElementById('urunModeli').value = '';
+    document.getElementById('klasorYolu').value = '';
+    document.getElementById('statusMessage').className = 'status-message';
+    document.getElementById('statusMessage').textContent = '';
+});
+
+// ---- File Upload and Search Functionality ----
 document.getElementById('fileInput').addEventListener('change', function(e){
     const file = e.target.files[0];
     if(!file) return alert("Dosya seçmediniz!");
