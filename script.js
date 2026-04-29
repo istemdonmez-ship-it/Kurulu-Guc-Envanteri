@@ -10,6 +10,13 @@
 let records = [];
 let endUsers = [];
 
+// Excel search state
+let excelSheetsData = {};
+let excelCurrentSheet = '';
+const MAX_EXCEL_FILE_SIZE_MB = 20;
+const EXCEL_SEARCH_DEBOUNCE_MS = 250;
+let excelDebounceTimer;
+
 // --------------------------------------------------
 // Initialisation
 // --------------------------------------------------
@@ -23,6 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setupModalListeners();
     setupRecordsTabListeners();
     setupSettingsListeners();
+    setupExcelSearch();
 
     // Set today's date as default for visit date
     const visitDateEl = document.getElementById('visitDate');
@@ -383,6 +391,7 @@ function displayRecords() {
         return;
     }
 
+    container.innerHTML = '';
     const columns = [
         { key: 'visitDate', label: 'Visit Date' },
         { key: 'installationPointNo', label: 'Inst. Point No' },
@@ -679,4 +688,224 @@ function showNotification(message, type) {
     document.body.appendChild(div);
 
     setTimeout(() => { if (div.parentNode) div.remove(); }, 3500);
+}
+
+// --------------------------------------------------
+// Excel File Search (Settings tab)
+// --------------------------------------------------
+function setupExcelSearch() {
+    const importBtn = document.getElementById('importExcelBtn');
+    const fileInput = document.getElementById('excelFileInput');
+    const clearBtn  = document.getElementById('clearExcelBtn');
+    const sheetSel  = document.getElementById('excelSheetSelector');
+    const searchEl  = document.getElementById('excelSearchInput');
+
+    if (!importBtn || !fileInput) return;
+
+    importBtn.addEventListener('click', () => fileInput.click());
+
+    fileInput.addEventListener('change', function (e) {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const maxMB = MAX_EXCEL_FILE_SIZE_MB;
+        if (file.size > maxMB * 1024 * 1024) {
+            showNotification('❌ File is too large (max ' + maxMB + ' MB).', 'error');
+            e.target.value = '';
+            return;
+        }
+
+        const ext = file.name.split('.').pop().toLowerCase();
+        if (ext !== 'xlsx' && ext !== 'xls') {
+            showNotification('❌ Only .xlsx and .xls files are supported.', 'error');
+            e.target.value = '';
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function (ev) {
+            try {
+                const data     = new Uint8Array(ev.target.result);
+                const workbook = XLSX.read(data, { type: 'array' });
+
+                excelSheetsData = {};
+                workbook.SheetNames.forEach(name => {
+                    const ws  = workbook.Sheets[name];
+                    const raw = XLSX.utils.sheet_to_json(ws, { header: 1, defval: '' });
+                    if (raw.length > 0) {
+                        const headers = raw[0].map(h => String(h));
+                        const rows    = raw.slice(1).map(row => {
+                            const obj = {};
+                            headers.forEach((h, i) => { obj[h] = row[i] !== undefined ? row[i] : ''; });
+                            return obj;
+                        }).filter(row => Object.values(row).some(v => String(v).trim() !== ''));
+                        if (rows.length > 0) {
+                            excelSheetsData[name] = { headers, rows };
+                        }
+                    }
+                });
+
+                const validSheets = Object.keys(excelSheetsData);
+                if (validSheets.length === 0) {
+                    showNotification('⚠️ No usable data found in the file.', 'warning');
+                    e.target.value = '';
+                    return;
+                }
+
+                excelCurrentSheet = validSheets[0];
+                updateExcelUI(file.name, validSheets);
+                showNotification('✅ Excel file loaded: ' + validSheets.length + ' sheet(s) found.', 'success');
+            } catch (err) {
+                console.error(err);
+                showNotification('❌ Could not read the file. Make sure it is a valid Excel file.', 'error');
+            }
+            e.target.value = '';
+        };
+        reader.readAsArrayBuffer(file);
+    });
+
+    if (clearBtn) {
+        clearBtn.addEventListener('click', clearExcelFile);
+    }
+
+    if (sheetSel) {
+        sheetSel.addEventListener('change', function () {
+            excelCurrentSheet = this.value;
+            const query = searchEl ? searchEl.value.trim().toLowerCase() : '';
+            renderExcelResults(filterExcelData(query));
+        });
+    }
+
+    if (searchEl) {
+        searchEl.addEventListener('input', function () {
+            clearTimeout(excelDebounceTimer);
+            excelDebounceTimer = setTimeout(() => {
+                renderExcelResults(filterExcelData(this.value.trim().toLowerCase()));
+            }, EXCEL_SEARCH_DEBOUNCE_MS);
+        });
+    }
+}
+
+function updateExcelUI(fileName, sheetNames) {
+    const fileInfo    = document.getElementById('excelFileInfo');
+    const clearBtn    = document.getElementById('clearExcelBtn');
+    const sheetWrap   = document.getElementById('excelSheetSelectorWrapper');
+    const sheetSel    = document.getElementById('excelSheetSelector');
+    const searchWrap  = document.getElementById('excelSearchWrapper');
+    const countEl     = document.getElementById('excelResultsCount');
+
+    if (fileInfo) {
+        fileInfo.textContent = '📄 ' + escapeHtml(fileName) +
+            ' — ' + sheetNames.length + ' sheet(s), ' +
+            Object.values(excelSheetsData).reduce((s, d) => s + d.rows.length, 0) + ' total rows';
+        fileInfo.style.display = 'block';
+    }
+    if (clearBtn) clearBtn.style.display = 'inline-block';
+    if (searchWrap) searchWrap.style.display = 'block';
+    if (countEl) countEl.style.display = 'block';
+
+    if (sheetSel && sheetWrap) {
+        sheetSel.innerHTML = '';
+        sheetNames.forEach(name => {
+            const opt = document.createElement('option');
+            opt.value = name;
+            opt.textContent = name + ' (' + excelSheetsData[name].rows.length + ' rows)';
+            sheetSel.appendChild(opt);
+        });
+        sheetWrap.style.display = sheetNames.length > 1 ? 'flex' : 'none';
+    }
+
+    // Show all rows for the first sheet initially
+    renderExcelResults(filterExcelData(''));
+}
+
+function clearExcelFile() {
+    excelSheetsData  = {};
+    excelCurrentSheet = '';
+
+    const fileInfo   = document.getElementById('excelFileInfo');
+    const clearBtn   = document.getElementById('clearExcelBtn');
+    const sheetWrap  = document.getElementById('excelSheetSelectorWrapper');
+    const searchWrap = document.getElementById('excelSearchWrapper');
+    const countEl    = document.getElementById('excelResultsCount');
+    const container  = document.getElementById('excelResultsContainer');
+    const searchEl   = document.getElementById('excelSearchInput');
+
+    if (fileInfo)   { fileInfo.style.display = 'none'; fileInfo.textContent = ''; }
+    if (clearBtn)   clearBtn.style.display = 'none';
+    if (sheetWrap)  sheetWrap.style.display = 'none';
+    if (searchWrap) searchWrap.style.display = 'none';
+    if (countEl)    { countEl.style.display = 'none'; countEl.textContent = ''; }
+    if (container)  container.innerHTML = '';
+    if (searchEl)   searchEl.value = '';
+
+    showNotification('🗑️ Excel file cleared.', 'info');
+}
+
+function filterExcelData(query) {
+    const sheet = excelSheetsData[excelCurrentSheet];
+    if (!sheet) return { headers: [], rows: [] };
+    if (!query) return { headers: sheet.headers, rows: sheet.rows };
+    const filtered = sheet.rows.filter(row =>
+        Object.values(row).some(v => String(v).toLowerCase().includes(query))
+    );
+    return { headers: sheet.headers, rows: filtered };
+}
+
+function renderExcelResults(data) {
+    const container = document.getElementById('excelResultsContainer');
+    const countEl   = document.getElementById('excelResultsCount');
+    if (!container) return;
+
+    container.innerHTML = '';
+
+    const totalRows = excelSheetsData[excelCurrentSheet]
+        ? excelSheetsData[excelCurrentSheet].rows.length : 0;
+    const isFiltered = data.rows.length !== totalRows;
+
+    if (countEl) {
+        countEl.textContent = data.rows.length + ' row' + (data.rows.length !== 1 ? 's' : '') +
+            (isFiltered ? ' (filtered from ' + totalRows + ' total)' : ' total') +
+            ' — Sheet: ' + escapeHtml(excelCurrentSheet);
+    }
+
+    if (data.headers.length === 0) {
+        container.innerHTML = '<div class="excel-empty-state">No data to display.</div>';
+        return;
+    }
+
+    if (data.rows.length === 0) {
+        container.innerHTML = '<div class="excel-empty-state">🔍 No matching rows found. Try a different search term.</div>';
+        return;
+    }
+
+    const scrollDiv = document.createElement('div');
+    scrollDiv.className = 'excel-table-scroll';
+
+    const table = document.createElement('table');
+    table.className = 'excel-table';
+
+    const thead = document.createElement('thead');
+    const headRow = document.createElement('tr');
+    data.headers.forEach(h => {
+        const th = document.createElement('th');
+        th.textContent = h;
+        headRow.appendChild(th);
+    });
+    thead.appendChild(headRow);
+    table.appendChild(thead);
+
+    const tbody = document.createElement('tbody');
+    data.rows.forEach(row => {
+        const tr = document.createElement('tr');
+        data.headers.forEach(h => {
+            const td = document.createElement('td');
+            td.textContent = row[h] !== undefined ? row[h] : '';
+            tr.appendChild(td);
+        });
+        tbody.appendChild(tr);
+    });
+    table.appendChild(tbody);
+    scrollDiv.appendChild(table);
+    container.appendChild(scrollDiv);
 }
