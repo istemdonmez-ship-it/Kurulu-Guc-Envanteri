@@ -519,28 +519,46 @@
     function saveNotes(notes) {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(notes));
     }
-    function esc(text) {
-        return String(text)
-            .replace(/&/g, '&amp;').replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
-    }
     function renderNotes() {
         var notes = loadNotes();
         var list = document.getElementById('stickyNotesList');
         if (!list) return;
+        list.innerHTML = '';
         if (notes.length === 0) {
-            list.innerHTML = '<div class="sticky-notes-empty">Henüz not eklenmedi</div>';
+            var empty = document.createElement('div');
+            empty.className = 'sticky-notes-empty';
+            empty.textContent = 'Henüz not eklenmedi';
+            list.appendChild(empty);
             return;
         }
-        list.innerHTML = notes.map(function(note) {
-            return '<div class="sticky-note-item" data-id="' + note.id + '">' +
-                '<div class="sticky-note-text">' + esc(note.text) + '</div>' +
-                '<div class="sticky-note-actions">' +
-                  '<button class="sticky-note-btn-edit" data-id="' + note.id + '">✏️</button>' +
-                  '<button class="sticky-note-btn-delete" data-id="' + note.id + '">🗑️</button>' +
-                '</div>' +
-            '</div>';
-        }).join('');
+        notes.forEach(function(note) {
+            var item = document.createElement('div');
+            item.className = 'sticky-note-item';
+            item.dataset.id = note.id;
+
+            var textDiv = document.createElement('div');
+            textDiv.className = 'sticky-note-text';
+            textDiv.textContent = note.text;
+
+            var actionsDiv = document.createElement('div');
+            actionsDiv.className = 'sticky-note-actions';
+
+            var editBtn = document.createElement('button');
+            editBtn.className = 'sticky-note-btn-edit';
+            editBtn.dataset.id = note.id;
+            editBtn.textContent = '✏️';
+
+            var delBtn = document.createElement('button');
+            delBtn.className = 'sticky-note-btn-delete';
+            delBtn.dataset.id = note.id;
+            delBtn.textContent = '🗑️';
+
+            actionsDiv.appendChild(editBtn);
+            actionsDiv.appendChild(delBtn);
+            item.appendChild(textDiv);
+            item.appendChild(actionsDiv);
+            list.appendChild(item);
+        });
     }
     function showAddArea(prefillText, id) {
         var area = document.getElementById('stickyNoteAddArea');

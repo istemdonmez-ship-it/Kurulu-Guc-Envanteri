@@ -13,6 +13,8 @@ let endUsers = [];
 // Excel search state
 let excelSheetsData = {};
 let excelCurrentSheet = '';
+const MAX_EXCEL_FILE_SIZE_MB = 20;
+let excelDebounceTimer;
 
 // --------------------------------------------------
 // Initialisation
@@ -705,7 +707,7 @@ function setupExcelSearch() {
         const file = e.target.files[0];
         if (!file) return;
 
-        const maxMB = 20;
+        const maxMB = MAX_EXCEL_FILE_SIZE_MB;
         if (file.size > maxMB * 1024 * 1024) {
             showNotification('❌ File is too large (max ' + maxMB + ' MB).', 'error');
             e.target.value = '';
@@ -774,10 +776,9 @@ function setupExcelSearch() {
     }
 
     if (searchEl) {
-        let debounceTimer;
         searchEl.addEventListener('input', function () {
-            clearTimeout(debounceTimer);
-            debounceTimer = setTimeout(() => {
+            clearTimeout(excelDebounceTimer);
+            excelDebounceTimer = setTimeout(() => {
                 renderExcelResults(filterExcelData(this.value.trim().toLowerCase()));
             }, 250);
         });
