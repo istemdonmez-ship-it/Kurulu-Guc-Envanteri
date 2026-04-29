@@ -14,6 +14,7 @@ let endUsers = [];
 let excelSheetsData = {};
 let excelCurrentSheet = '';
 const MAX_EXCEL_FILE_SIZE_MB = 20;
+const EXCEL_SEARCH_DEBOUNCE_MS = 250;
 let excelDebounceTimer;
 
 // --------------------------------------------------
@@ -780,7 +781,7 @@ function setupExcelSearch() {
             clearTimeout(excelDebounceTimer);
             excelDebounceTimer = setTimeout(() => {
                 renderExcelResults(filterExcelData(this.value.trim().toLowerCase()));
-            }, 250);
+            }, EXCEL_SEARCH_DEBOUNCE_MS);
         });
     }
 }

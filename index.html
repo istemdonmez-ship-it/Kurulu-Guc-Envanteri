@@ -582,7 +582,7 @@
             var idx = notes.findIndex(function(n) { return n.id === editingId; });
             if (idx !== -1) notes[idx].text = text;
         } else {
-            notes.push({ id: String(Date.now()) + '-' + Math.random().toString(36).substr(2, 9), text: text });
+            notes.push({ id: String(Date.now()) + '-' + Math.random().toString(36).substring(2, 11), text: text });
         }
         saveNotes(notes);
         renderNotes();
