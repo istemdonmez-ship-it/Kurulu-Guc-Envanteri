@@ -19,10 +19,159 @@ tbody tr:nth-child(even) { background-color: #f2f2f2; }
 .card:hover { background: #334155; transform: translateY(-3px); box-shadow: 0 6px 14px rgba(0,0,0,0.3); color: #60a5fa; }
 footer { background: #60a5fa; color: #aaa; padding: 20px; font-family: Arial, sans-serif; }
 footer span { color: #000; }
+
+/* --- Sticky Notes Panel --- */
+.page-header-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 14px;
+}
+.page-header-row h2 { margin: 0; padding: 0; flex: 1; min-width: 200px; }
+.sticky-notes-panel {
+    background: #fefce8;
+    border: 1px solid #fde68a;
+    border-radius: 8px;
+    box-shadow: 2px 3px 10px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.7);
+    width: 300px;
+    flex-shrink: 0;
+    padding: 12px 14px;
+}
+.sticky-notes-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+.sticky-notes-header span {
+    font-weight: bold;
+    font-size: 14px;
+    color: #92400e;
+}
+.btn-add-note {
+    background: #f59e0b !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 4px !important;
+    padding: 3px 10px !important;
+    cursor: pointer !important;
+    font-size: 12px !important;
+    font-weight: bold !important;
+    width: auto !important;
+    margin: 0 !important;
+}
+.btn-add-note:hover { background: #d97706 !important; }
+.sticky-notes-list {
+    max-height: 180px;
+    overflow-y: auto;
+    margin-bottom: 6px;
+}
+.sticky-note-item {
+    background: #fef9c3;
+    border: 1px solid #fde047;
+    border-radius: 4px;
+    padding: 7px 8px;
+    margin-bottom: 5px;
+    font-size: 13px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 6px;
+}
+.sticky-note-text {
+    flex: 1;
+    word-break: break-word;
+    color: #1c1917;
+    line-height: 1.4;
+    white-space: pre-wrap;
+}
+.sticky-note-actions { display: flex; gap: 4px; flex-shrink: 0; }
+.sticky-note-btn-edit,
+.sticky-note-btn-delete {
+    border: none !important;
+    border-radius: 3px !important;
+    padding: 2px 6px !important;
+    cursor: pointer !important;
+    font-size: 11px !important;
+    width: auto !important;
+    margin: 0 !important;
+}
+.sticky-note-btn-edit  { background: #fbbf24 !important; color: #1c1917 !important; }
+.sticky-note-btn-edit:hover  { background: #f59e0b !important; }
+.sticky-note-btn-delete { background: #ef4444 !important; color: white !important; }
+.sticky-note-btn-delete:hover { background: #dc2626 !important; }
+.sticky-notes-empty {
+    color: #a78a56;
+    font-size: 12px;
+    text-align: center;
+    padding: 8px 0;
+    font-style: italic;
+}
+.sticky-note-add-area {
+    display: none;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 8px;
+}
+.sticky-note-add-area textarea {
+    width: 100% !important;
+    padding: 7px !important;
+    border: 1px solid #fde68a !important;
+    border-radius: 4px !important;
+    font-size: 13px !important;
+    font-family: Arial, sans-serif !important;
+    background: #fffff0 !important;
+    min-height: 64px !important;
+    resize: vertical !important;
+    box-sizing: border-box !important;
+    margin: 0 !important;
+}
+.sticky-note-add-area textarea:focus {
+    outline: none !important;
+    border-color: #f59e0b !important;
+    box-shadow: 0 0 0 2px rgba(245,158,11,0.2) !important;
+}
+.sticky-note-add-actions { display: flex; gap: 6px; justify-content: flex-end; }
+.btn-save-note,
+.btn-cancel-note {
+    border: none !important;
+    border-radius: 4px !important;
+    padding: 4px 12px !important;
+    cursor: pointer !important;
+    font-size: 12px !important;
+    width: auto !important;
+    margin: 0 !important;
+}
+.btn-save-note   { background: #22c55e !important; color: white !important; }
+.btn-save-note:hover   { background: #16a34a !important; }
+.btn-cancel-note { background: #6b7280 !important; color: white !important; }
+.btn-cancel-note:hover { background: #4b5563 !important; }
+@media (max-width: 640px) {
+    .page-header-row { flex-direction: column; }
+    .sticky-notes-panel { width: 100%; }
+}
 </style>
 </head>
 <body>
-<h2>Pompa Popülasyon Listesi Arama Motoru</h2>
+<div class="page-header-row">
+  <h2>Pompa Popülasyon Listesi Arama Motoru</h2>
+  <div class="sticky-notes-panel" id="stickyNotesPanel">
+    <div class="sticky-notes-header">
+      <span>📝 Notlar</span>
+      <button class="btn-add-note" id="btnAddNote">+ Ekle</button>
+    </div>
+    <div class="sticky-notes-list" id="stickyNotesList"></div>
+    <div class="sticky-note-add-area" id="stickyNoteAddArea">
+      <textarea id="stickyNoteInput" placeholder="Notunuzu yazın..."></textarea>
+      <div class="sticky-note-add-actions">
+        <button class="btn-cancel-note" id="btnCancelNote">İptal</button>
+        <button class="btn-save-note" id="btnSaveNote">Kaydet</button>
+      </div>
+    </div>
+  </div>
+</div>
 <input type="file" id="fileInput" accept=".csv, .xlsx"/>
 <input type="text" id="searchInput" placeholder="Aramak istediğiniz değeri yazın..."/>
 <button id="exportBtn">Raporu Excel olarak indir</button>
@@ -212,6 +361,109 @@ document.getElementById('exportBtn').addEventListener('click', function(){
     const fileName = `${serialNo}_Pompa_Listesi.xlsx`;
     XLSX.writeFile(wb, fileName);
 });
+
+// ---- Sticky Notes ----
+(function() {
+    const STORAGE_KEY = 'pompaNotlari';
+    let editingId = null;
+
+    function loadNotes() {
+        try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
+        catch(e) { return []; }
+    }
+
+    function saveNotes(notes) {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(notes));
+    }
+
+    function escapeHtml(text) {
+        return text
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+    }
+
+    function renderNotes() {
+        const notes = loadNotes();
+        const list = document.getElementById('stickyNotesList');
+        if (!list) return;
+        if (notes.length === 0) {
+            list.innerHTML = '<div class="sticky-notes-empty">Henüz not eklenmedi</div>';
+            return;
+        }
+        list.innerHTML = notes.map(function(note) {
+            return '<div class="sticky-note-item" data-id="' + note.id + '">' +
+                '<div class="sticky-note-text">' + escapeHtml(note.text) + '</div>' +
+                '<div class="sticky-note-actions">' +
+                  '<button class="sticky-note-btn-edit" data-id="' + note.id + '">✏️</button>' +
+                  '<button class="sticky-note-btn-delete" data-id="' + note.id + '">🗑️</button>' +
+                '</div>' +
+            '</div>';
+        }).join('');
+    }
+
+    function showAddArea(prefillText, id) {
+        const area = document.getElementById('stickyNoteAddArea');
+        const input = document.getElementById('stickyNoteInput');
+        editingId = id || null;
+        input.value = prefillText || '';
+        area.style.display = 'flex';
+        input.focus();
+    }
+
+    function hideAddArea() {
+        const area = document.getElementById('stickyNoteAddArea');
+        area.style.display = 'none';
+        editingId = null;
+        document.getElementById('stickyNoteInput').value = '';
+    }
+
+    function saveNote() {
+        const input = document.getElementById('stickyNoteInput');
+        const text = input.value.trim();
+        if (!text) { input.focus(); return; }
+        const notes = loadNotes();
+        if (editingId) {
+            const idx = notes.findIndex(function(n) { return n.id === editingId; });
+            if (idx !== -1) notes[idx].text = text;
+        } else {
+            notes.push({ id: String(Date.now()) + '-' + Math.random().toString(36).substr(2, 9), text: text });
+        }
+        saveNotes(notes);
+        renderNotes();
+        hideAddArea();
+    }
+
+    function deleteNote(id) {
+        saveNotes(loadNotes().filter(function(n) { return n.id !== id; }));
+        renderNotes();
+    }
+
+    function editNote(id) {
+        const note = loadNotes().find(function(n) { return n.id === id; });
+        if (note) showAddArea(note.text, id);
+    }
+
+    document.getElementById('btnAddNote').addEventListener('click', function() { showAddArea(); });
+    document.getElementById('btnSaveNote').addEventListener('click', saveNote);
+    document.getElementById('btnCancelNote').addEventListener('click', hideAddArea);
+
+    document.getElementById('stickyNoteInput').addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { saveNote(); }
+        if (e.key === 'Escape') { hideAddArea(); }
+    });
+
+    document.getElementById('stickyNotesList').addEventListener('click', function(e) {
+        const editBtn = e.target.closest('.sticky-note-btn-edit');
+        const delBtn  = e.target.closest('.sticky-note-btn-delete');
+        if (editBtn) editNote(editBtn.dataset.id);
+        if (delBtn)  deleteNote(delBtn.dataset.id);
+    });
+
+    renderNotes();
+})();
 </script>
 
 <footer style="background: #60a5fa; color: #aaa; padding: 20px; font-family: Arial, sans-serif; margin-top: 50px;">
