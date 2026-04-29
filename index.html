@@ -3,33 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pompa Popülasyon Listesi Arama Motoru / TR Import OEM, EPC, Exporteur 699999816 - Parking Place: 8618248</title>
+<title>Equipment Inventory System — Pompa Popülasyon Listesi</title>
+<link rel="stylesheet" href="style.css">
 <style>
-body { font-family: Arial, sans-serif; padding: 20px; background: #f9f9f9; }
-input, button { padding: 5px; width: 200px; margin-right: 10px; margin-bottom: 10px; }
-table { border-collapse: collapse; width: 100%; margin-top: 10px; }
-th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
-th { background-color: #007BFF; color: white; }
-tbody tr:nth-child(even) { background-color: #f2f2f2; }
-#reportContainer { margin-top: 20px; }
-.sheet-report { margin-top: 20px; padding: 15px; background: white; border-radius: 5px; border-left: 4px solid #007BFF; }
-.sheet-title { background-color: #007BFF; color: white; padding: 8px 12px; margin-bottom: 10px; border-radius: 3px; font-weight: bold; }
-.result-count { color: #666; font-size: 13px; margin-bottom: 8px; }
-.card { display: flex; align-items: center; justify-content: center; gap: 6px; padding: 12px; text-align: center; background: #1e293b; color: #e2e8f0; border-radius: 10px; text-decoration: none; font-size: 14px; transition: all 0.3s ease; box-shadow: 0 2px 6px rgba(0,0,0,0.2); }
-.card:hover { background: #334155; transform: translateY(-3px); box-shadow: 0 6px 14px rgba(0,0,0,0.3); color: #60a5fa; }
-footer { background: #60a5fa; color: #aaa; padding: 20px; font-family: Arial, sans-serif; }
-footer span { color: #000; }
-
-/* --- Sticky Notes Panel --- */
-.page-header-row {
+/* ---------- Sticky Notes Panel ---------- */
+.sticky-notes-wrapper {
+    padding: 10px 30px 0;
     display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 16px;
-    margin-bottom: 14px;
+    justify-content: flex-end;
 }
-.page-header-row h2 { margin: 0; padding: 0; flex: 1; min-width: 200px; }
 .sticky-notes-panel {
     background: #fefce8;
     border: 1px solid #fde68a;
@@ -121,7 +103,7 @@ footer span { color: #000; }
     border: 1px solid #fde68a !important;
     border-radius: 4px !important;
     font-size: 13px !important;
-    font-family: Arial, sans-serif !important;
+    font-family: inherit !important;
     background: #fffff0 !important;
     min-height: 64px !important;
     resize: vertical !important;
@@ -148,246 +130,403 @@ footer span { color: #000; }
 .btn-save-note:hover   { background: #16a34a !important; }
 .btn-cancel-note { background: #6b7280 !important; color: white !important; }
 .btn-cancel-note:hover { background: #4b5563 !important; }
-@media (max-width: 640px) {
-    .page-header-row { flex-direction: column; }
-    .sticky-notes-panel { width: 100%; }
+
+/* ---------- Footer ---------- */
+.site-footer {
+    background: #60a5fa;
+    color: #aaa;
+    padding: 20px;
+    margin-top: 30px;
+}
+.site-footer .footer-brand {
+    text-align: center;
+    margin-bottom: 15px;
+    color: #000;
+    font-size: 14px;
+}
+.footer-links {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 12px;
+    max-width: 900px;
+    margin: auto;
+}
+.footer-card {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 12px;
+    text-align: center;
+    background: #1e293b;
+    color: #e2e8f0;
+    border-radius: 10px;
+    text-decoration: none;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+.footer-card:hover {
+    background: #334155;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 14px rgba(0,0,0,0.3);
+    color: #60a5fa;
 }
 </style>
 </head>
 <body>
-<div class="page-header-row">
-  <h2>Pompa Popülasyon Listesi Arama Motoru</h2>
-  <div class="sticky-notes-panel" id="stickyNotesPanel">
-    <div class="sticky-notes-header">
-      <span>📝 Notlar</span>
-      <button class="btn-add-note" id="btnAddNote">+ Ekle</button>
-    </div>
-    <div class="sticky-notes-list" id="stickyNotesList"></div>
-    <div class="sticky-note-add-area" id="stickyNoteAddArea">
-      <textarea id="stickyNoteInput" placeholder="Notunuzu yazın..."></textarea>
-      <div class="sticky-note-add-actions">
-        <button class="btn-cancel-note" id="btnCancelNote">İptal</button>
-        <button class="btn-save-note" id="btnSaveNote">Kaydet</button>
+
+<div class="container">
+
+  <!-- Header -->
+  <header>
+    <h1>⚙️ Equipment Inventory System</h1>
+    <p class="subtitle">Pompa Popülasyon Listesi — TR Import OEM, EPC, Exporteur 699999816</p>
+  </header>
+
+  <!-- Sticky Notes -->
+  <div class="sticky-notes-wrapper">
+    <div class="sticky-notes-panel" id="stickyNotesPanel">
+      <div class="sticky-notes-header">
+        <span>📝 Notlar</span>
+        <button class="btn-add-note" id="btnAddNote">+ Ekle</button>
+      </div>
+      <div class="sticky-notes-list" id="stickyNotesList"></div>
+      <div class="sticky-note-add-area" id="stickyNoteAddArea">
+        <textarea id="stickyNoteInput" placeholder="Notunuzu yazın..."></textarea>
+        <div class="sticky-note-add-actions">
+          <button class="btn-cancel-note" id="btnCancelNote">İptal</button>
+          <button class="btn-save-note" id="btnSaveNote">Kaydet</button>
+        </div>
       </div>
     </div>
   </div>
-</div>
-<input type="file" id="fileInput" accept=".csv, .xlsx"/>
-<input type="text" id="searchInput" placeholder="Aramak istediğiniz değeri yazın..."/>
-<button id="exportBtn">Raporu Excel olarak indir</button>
-<div id="reportContainer">
-<h3>Arama Raporu</h3>
+
+  <!-- Tab Navigation -->
+  <nav class="tabs">
+    <button class="tab-button active" data-tab="tab-add">➕ Add Record</button>
+    <button class="tab-button" data-tab="tab-records">📋 Records</button>
+    <button class="tab-button" data-tab="tab-settings">⚙️ Settings</button>
+  </nav>
+
+  <!-- ==================== Add Record Tab ==================== -->
+  <div id="tab-add" class="tab-content active">
+    <form id="inventoryForm" novalidate>
+
+      <!-- Section 1: Visit Information -->
+      <fieldset>
+        <legend>📅 Visit Information</legend>
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="salesRepName">Sales Rep Name</label>
+            <input type="text" id="salesRepName" placeholder="Your name">
+          </div>
+          <div class="form-group">
+            <label for="visitDate">Visit Date <span class="required">*</span></label>
+            <input type="date" id="visitDate">
+          </div>
+          <div class="form-group">
+            <label for="visitType">Visit Type</label>
+            <select id="visitType"><option value="">-- Select --</option></select>
+          </div>
+          <div class="form-group">
+            <label for="distributionChannel">Distribution Channel</label>
+            <select id="distributionChannel"><option value="">-- Select --</option></select>
+          </div>
+          <div class="form-group">
+            <label for="emailAddress">Email Address</label>
+            <input type="email" id="emailAddress" placeholder="contact@example.com">
+          </div>
+          <div class="form-group">
+            <label for="mobileNumber">Mobile Number</label>
+            <input type="tel" id="mobileNumber" placeholder="+90 5XX XXX XX XX">
+          </div>
+        </div>
+      </fieldset>
+
+      <!-- Section 2: End User / Installation Point -->
+      <fieldset>
+        <legend>🏭 End User / Installation Point</legend>
+        <div class="form-grid">
+          <div class="form-group span-2">
+            <label for="installationPointDropdown">Installation Point <span class="required">*</span></label>
+            <select id="installationPointDropdown"><option value="">-- Select Installation Point --</option></select>
+          </div>
+          <div class="form-group">
+            <div class="section-actions">
+              <button type="button" class="btn-secondary" id="addNewEndUserBtn">+ Add New End User</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="endUserNo">End User No</label>
+            <input type="text" id="endUserNo" readonly class="auto-filled" placeholder="Auto-filled">
+          </div>
+          <div class="form-group span-2">
+            <label for="endUser">End User Name</label>
+            <input type="text" id="endUser" readonly class="auto-filled" placeholder="Auto-filled">
+          </div>
+          <div class="form-group">
+            <label for="country">Country</label>
+            <select id="country"><option value="">-- Select --</option></select>
+          </div>
+          <div class="form-group">
+            <label for="region">Region</label>
+            <select id="region"><option value="">-- Select --</option></select>
+          </div>
+        </div>
+      </fieldset>
+
+      <!-- Section 3: Location & Industry -->
+      <fieldset>
+        <legend>📍 Location &amp; Industry</legend>
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="city">City</label>
+            <select id="city"><option value="">-- Select --</option></select>
+          </div>
+          <div class="form-group">
+            <label for="district">District</label>
+            <input type="text" id="district" placeholder="District / Area">
+          </div>
+          <div class="form-group">
+            <label for="industry">Industry</label>
+            <select id="industry"><option value="">-- Select --</option></select>
+          </div>
+          <div class="form-group">
+            <label for="application">Application</label>
+            <select id="application"><option value="">-- Select --</option></select>
+          </div>
+        </div>
+      </fieldset>
+
+      <!-- Section 4: Product Details -->
+      <fieldset>
+        <legend>🔩 Product Details</legend>
+        <div class="form-grid">
+          <div class="form-group span-2">
+            <label for="productModel">Product Model <span class="required">*</span></label>
+            <select id="productModel"><option value="">-- Select Model --</option></select>
+          </div>
+          <div class="form-group">
+            <label for="productLineNo">Product Line No</label>
+            <input type="text" id="productLineNo" readonly class="auto-filled" placeholder="Auto-filled">
+          </div>
+          <div class="form-group span-2">
+            <label for="productLineName">Name of Product Line</label>
+            <input type="text" id="productLineName" readonly class="auto-filled" placeholder="Auto-filled">
+          </div>
+          <div class="form-group">
+            <label for="productLineType">Product Line Type</label>
+            <input type="text" id="productLineType" readonly class="auto-filled" placeholder="Auto-filled">
+          </div>
+          <div class="form-group">
+            <label for="serialNumber">Serial Number <span class="required">*</span></label>
+            <input type="text" id="serialNumber" placeholder="e.g. SN-123456">
+          </div>
+          <div class="form-group">
+            <label for="yearOfManufacture">Year of Manufacture</label>
+            <input type="number" id="yearOfManufacture" placeholder="e.g. 2019" min="1950" max="2099">
+          </div>
+          <div class="form-group">
+            <label for="productType">Product Type</label>
+            <select id="productType"><option value="">-- Select --</option></select>
+          </div>
+          <div class="form-group">
+            <label for="mechanicalSeal">Mechanical Seal</label>
+            <select id="mechanicalSeal"><option value="">-- Select --</option></select>
+          </div>
+        </div>
+      </fieldset>
+
+      <!-- Section 5: Sales & Order -->
+      <fieldset>
+        <legend>💰 Sales &amp; Order</legend>
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="sparePartsPerYear">Spare Sales / Year</label>
+            <input type="text" id="sparePartsPerYear" readonly class="auto-filled highlight" placeholder="Auto-filled">
+          </div>
+          <div class="form-group">
+            <label for="quantity">Quantity</label>
+            <input type="number" id="quantity" placeholder="1" min="1">
+          </div>
+          <div class="form-group">
+            <label for="potentialOrderSales">Potential Order Sales</label>
+            <input type="text" id="potentialOrderSales" readonly class="auto-filled highlight" placeholder="Auto-calculated">
+          </div>
+          <div class="form-group">
+            <label for="currency">Currency</label>
+            <select id="currency"><option value="">-- Select --</option></select>
+          </div>
+          <div class="form-group">
+            <label for="orderStatus">Order Status</label>
+            <select id="orderStatus"><option value="">-- Select --</option></select>
+          </div>
+          <div class="form-group">
+            <label for="followUpDate">Follow-up Date</label>
+            <input type="date" id="followUpDate">
+          </div>
+        </div>
+      </fieldset>
+
+      <!-- Section 6: Notes & Priority -->
+      <fieldset>
+        <legend>📝 Notes &amp; Priority</legend>
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="priority">Priority</label>
+            <select id="priority"><option value="">-- Select --</option></select>
+          </div>
+          <div class="form-group span-2">
+            <label for="nextAction">Next Action</label>
+            <input type="text" id="nextAction" placeholder="Describe next steps...">
+          </div>
+          <div class="form-group span-2">
+            <label for="technicalNotes">Technical Notes</label>
+            <textarea id="technicalNotes" placeholder="Technical observations, pump conditions..."></textarea>
+          </div>
+          <div class="form-group span-2">
+            <label for="applicationNotes">Application Notes</label>
+            <textarea id="applicationNotes" placeholder="Process details, application specifics..."></textarea>
+          </div>
+        </div>
+      </fieldset>
+
+      <div class="form-actions">
+        <button type="submit" class="btn-primary">💾 Save Record</button>
+        <button type="button" class="btn-secondary" id="resetFormBtn">🔄 Reset Form</button>
+      </div>
+
+    </form>
+  </div><!-- /tab-add -->
+
+  <!-- ==================== Records Tab ==================== -->
+  <div id="tab-records" class="tab-content">
+    <div class="records-toolbar">
+      <div class="search-box">
+        <input type="text" id="searchInput" placeholder="🔍 Search records...">
+      </div>
+      <div class="records-actions">
+        <button class="btn-success" id="exportBtn">📊 Export CSV</button>
+        <button class="btn-danger" id="clearAllBtn">🗑️ Clear All</button>
+      </div>
+    </div>
+    <div class="records-count" id="recordsCount"></div>
+    <div id="recordsList"></div>
+  </div><!-- /tab-records -->
+
+  <!-- ==================== Settings Tab ==================== -->
+  <div id="tab-settings" class="tab-content">
+    <div class="settings-section">
+      <h3>⚙️ Settings &amp; Data Management</h3>
+
+      <!-- Data Backup / Restore -->
+      <div class="settings-group">
+        <h4>💾 Data Backup &amp; Restore</h4>
+        <p>Export all inventory records as a JSON backup or restore from a previous backup file.</p>
+        <div class="settings-actions">
+          <button class="btn-primary" id="exportDataBtn">⬇️ Export Backup</button>
+          <button class="btn-secondary" id="importDataBtn">⬆️ Import Backup</button>
+          <input type="file" id="importFile" accept=".json" style="display:none">
+        </div>
+      </div>
+
+      <!-- End User Management -->
+      <div class="settings-group">
+        <h4>👤 End User Database</h4>
+        <p id="endUserCount">Loading...</p>
+        <div class="settings-actions">
+          <button class="btn-secondary" id="manageEndUsersBtn">ℹ️ Manage End Users</button>
+        </div>
+      </div>
+
+      <!-- Excel File Search -->
+      <div class="settings-group excel-upload-section">
+        <h4>📂 Excel File Search</h4>
+        <p>Upload an Excel file (.xlsx, .xls) to search its contents. Supports multiple sheets.</p>
+
+        <div class="excel-upload-controls">
+          <button type="button" class="btn-primary" id="importExcelBtn">📂 Import Excel File</button>
+          <input type="file" id="excelFileInput" accept=".xlsx,.xls" style="display:none">
+          <button type="button" class="btn-secondary" id="clearExcelBtn" style="display:none">✕ Clear File</button>
+        </div>
+
+        <div id="excelFileInfo" class="excel-file-info" style="display:none"></div>
+
+        <div id="excelSheetSelectorWrapper" class="excel-sheet-selector-wrapper" style="display:none">
+          <label for="excelSheetSelector">Sheet:</label>
+          <select id="excelSheetSelector"></select>
+        </div>
+
+        <div id="excelSearchWrapper" class="excel-search-toolbar" style="display:none">
+          <input type="text" id="excelSearchInput" placeholder="🔍 Search within Excel file...">
+        </div>
+
+        <div id="excelResultsCount" class="excel-results-count" style="display:none"></div>
+        <div id="excelResultsContainer" class="excel-results-container"></div>
+      </div>
+
+    </div>
+  </div><!-- /tab-settings -->
+
+</div><!-- /container -->
+
+<!-- ==================== Modal: Add New End User ==================== -->
+<div id="addEndUserModal" class="modal-overlay" style="display:none">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h2>➕ Add New End User</h2>
+      <button class="modal-close" id="closeModalBtn" title="Close">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label for="newInstallationPoint">Installation Point No <span class="required">*</span></label>
+        <input type="text" id="newInstallationPoint" placeholder="e.g. 12345">
+      </div>
+      <div class="form-group">
+        <label for="newEndUserNo">End User No <span class="required">*</span></label>
+        <input type="text" id="newEndUserNo" placeholder="e.g. 900000001">
+      </div>
+      <div class="form-group">
+        <label for="newEndUserName">End User Name <span class="required">*</span></label>
+        <input type="text" id="newEndUserName" placeholder="Company / Facility name">
+      </div>
+      <div class="modal-error" id="modalError" style="display:none"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" id="cancelModalBtn">Cancel</button>
+      <button class="btn-primary" id="saveNewEndUserBtn">Save End User</button>
+    </div>
+  </div>
 </div>
 
+<!-- Scripts -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="data.js"></script>
+<script src="script.js"></script>
+
+<!-- Sticky Notes (inline, preserved) -->
 <script>
-let allSheetsData = {};
-let sheetNames = [];
-
-document.getElementById('fileInput').addEventListener('change', function(e){
-    const file = e.target.files[0];
-    if(!file) return alert("Dosya seçmediniz!");
-    const reader = new FileReader();
-    reader.onload = function(e){
-        try{
-            const data = new Uint8Array(e.target.result);
-            const workbook = XLSX.read(data,{ type:'array' });
-            
-            allSheetsData = {};
-            sheetNames = workbook.SheetNames;
-            
-            sheetNames.forEach(sheetName => {
-                const worksheet = workbook.Sheets[sheetName];
-                const raw = XLSX.utils.sheet_to_json(worksheet, { header:1, defval:"" });
-                
-                if(raw.length > 0){
-                    const headers = raw[0];
-                    const rows = raw.slice(1).map(row=>{
-                        const obj = {};
-                        headers.forEach((h,i)=>obj[h] = row[i] ?? "");
-                        return obj;
-                    });
-                    
-                    allSheetsData[sheetName] = {
-                        headers: headers,
-                        rows: rows
-                    };
-                }
-            });
-            
-            renderReport({});
-            alert(`Dosya yüklendi! Toplam ${sheetNames.length} sayfa bulundu. (${Object.keys(allSheetsData).length} geçerli sayfa)`);
-        }catch(err){
-            console.error(err);
-            alert("Dosya okunamadı!");
-        }
-    };
-    reader.readAsArrayBuffer(file);
-});
-
-function debounce(func, wait){
-    let timeout;
-    return function(...args){
-        clearTimeout(timeout);
-        timeout = setTimeout(()=>func.apply(this,args), wait);
-    };
-}
-
-document.getElementById('searchInput').addEventListener('input', debounce(function(e){
-    const query = e.target.value.trim().toLowerCase();
-    const results = {};
-    
-    Object.keys(allSheetsData).forEach(sheetName => {
-        const { headers, rows } = allSheetsData[sheetName];
-        const filteredRows = query 
-            ? rows.filter(row => Object.values(row).some(val=>String(val).toLowerCase().includes(query)))
-            : [];
-        
-        if(filteredRows.length > 0){
-            results[sheetName] = {
-                headers: headers,
-                rows: filteredRows
-            };
-        }
-    });
-    
-    renderReport(results);
-}, 300));
-
-function renderReport(data){
-    const reportContainer = document.getElementById('reportContainer');
-    const hasTitle = reportContainer.querySelector('h3');
-    
-    while(reportContainer.children.length > 1){
-        reportContainer.removeChild(reportContainer.lastChild);
-    }
-    
-    if(Object.keys(allSheetsData).length === 0){
-        return;
-    }
-    
-    if(Object.keys(data).length === 0 && document.getElementById('searchInput').value.trim() !== ''){
-        const noResultsDiv = document.createElement('div');
-        noResultsDiv.style.padding = '20px';
-        noResultsDiv.style.color = '#999';
-        noResultsDiv.textContent = 'Sonuç bulunamadı!';
-        reportContainer.appendChild(noResultsDiv);
-        return;
-    }
-    
-    Object.keys(data).forEach(sheetName => {
-        const { headers, rows } = data[sheetName];
-        
-        const sheetDiv = document.createElement('div');
-        sheetDiv.className = 'sheet-report';
-        
-        const titleDiv = document.createElement('div');
-        titleDiv.className = 'sheet-title';
-        titleDiv.textContent = `📄 ${sheetName}`;
-        sheetDiv.appendChild(titleDiv);
-        
-        const countDiv = document.createElement('div');
-        countDiv.className = 'result-count';
-        countDiv.textContent = `Bulunan Satır: ${rows.length}`;
-        sheetDiv.appendChild(countDiv);
-        
-        const table = document.createElement('table');
-        
-        const thead = document.createElement('thead');
-        const headRow = document.createElement('tr');
-        headers.forEach(h=>{
-            const th = document.createElement('th');
-            th.textContent = h;
-            headRow.appendChild(th);
-        });
-        thead.appendChild(headRow);
-        table.appendChild(thead);
-        
-        const tbody = document.createElement('tbody');
-        rows.forEach(row=>{
-            const tr = document.createElement('tr');
-            headers.forEach(h=>{
-                const td = document.createElement('td');
-                td.textContent = row[h] ?? "";
-                tr.appendChild(td);
-            });
-            tbody.appendChild(tr);
-        });
-        table.appendChild(tbody);
-        
-        sheetDiv.appendChild(table);
-        reportContainer.appendChild(sheetDiv);
-    });
-}
-
-document.getElementById('exportBtn').addEventListener('click', function(){
-    const sheetReports = document.querySelectorAll('.sheet-report');
-    
-    if(sheetReports.length === 0){
-        return alert("Dışa aktarılacak veri yok!");
-    }
-    
-    const wb = XLSX.utils.book_new();
-    let totalRows = 0;
-    
-    sheetReports.forEach(sheetReport => {
-        const titleText = sheetReport.querySelector('.sheet-title').textContent.replace('📄 ', '');
-        const table = sheetReport.querySelector('table');
-        const headers = Array.from(table.querySelectorAll('thead th')).map(th => th.textContent);
-        const rows = Array.from(table.querySelectorAll('tbody tr')).map(tr => 
-            Array.from(tr.children).map(td => td.textContent)
-        );
-        
-        totalRows += rows.length;
-        
-        const ws_data = [headers, ...rows];
-        const ws = XLSX.utils.aoa_to_sheet(ws_data);
-        XLSX.utils.book_append_sheet(wb, ws, titleText);
-    });
-    
-    let serialNo = "Rapor";
-    const firstSheetReport = document.querySelector('.sheet-report');
-    if(firstSheetReport){
-        const firstTable = firstSheetReport.querySelector('table');
-        const serialIdx = Array.from(firstTable.querySelectorAll('thead th')).findIndex(th => th.textContent === "Serial No");
-        if(serialIdx !== -1){
-            const firstRow = firstTable.querySelector('tbody tr');
-            if(firstRow){
-                serialNo = Array.from(firstRow.children)[serialIdx].textContent;
-            }
-        }
-    }
-    
-    const fileName = `${serialNo}_Pompa_Listesi.xlsx`;
-    XLSX.writeFile(wb, fileName);
-});
-
-// ---- Sticky Notes ----
 (function() {
-    const STORAGE_KEY = 'pompaNotlari';
-    let editingId = null;
+    'use strict';
+    var STORAGE_KEY = 'pompaNotlari';
+    var editingId = null;
 
     function loadNotes() {
         try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
         catch(e) { return []; }
     }
-
     function saveNotes(notes) {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(notes));
     }
-
-    function escapeHtml(text) {
-        return text
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#039;');
+    function esc(text) {
+        return String(text)
+            .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
     }
-
     function renderNotes() {
-        const notes = loadNotes();
-        const list = document.getElementById('stickyNotesList');
+        var notes = loadNotes();
+        var list = document.getElementById('stickyNotesList');
         if (!list) return;
         if (notes.length === 0) {
             list.innerHTML = '<div class="sticky-notes-empty">Henüz not eklenmedi</div>';
@@ -395,7 +534,7 @@ document.getElementById('exportBtn').addEventListener('click', function(){
         }
         list.innerHTML = notes.map(function(note) {
             return '<div class="sticky-note-item" data-id="' + note.id + '">' +
-                '<div class="sticky-note-text">' + escapeHtml(note.text) + '</div>' +
+                '<div class="sticky-note-text">' + esc(note.text) + '</div>' +
                 '<div class="sticky-note-actions">' +
                   '<button class="sticky-note-btn-edit" data-id="' + note.id + '">✏️</button>' +
                   '<button class="sticky-note-btn-delete" data-id="' + note.id + '">🗑️</button>' +
@@ -403,30 +542,26 @@ document.getElementById('exportBtn').addEventListener('click', function(){
             '</div>';
         }).join('');
     }
-
     function showAddArea(prefillText, id) {
-        const area = document.getElementById('stickyNoteAddArea');
-        const input = document.getElementById('stickyNoteInput');
+        var area = document.getElementById('stickyNoteAddArea');
+        var input = document.getElementById('stickyNoteInput');
         editingId = id || null;
         input.value = prefillText || '';
         area.style.display = 'flex';
         input.focus();
     }
-
     function hideAddArea() {
-        const area = document.getElementById('stickyNoteAddArea');
-        area.style.display = 'none';
+        document.getElementById('stickyNoteAddArea').style.display = 'none';
         editingId = null;
         document.getElementById('stickyNoteInput').value = '';
     }
-
     function saveNote() {
-        const input = document.getElementById('stickyNoteInput');
-        const text = input.value.trim();
+        var input = document.getElementById('stickyNoteInput');
+        var text = input.value.trim();
         if (!text) { input.focus(); return; }
-        const notes = loadNotes();
+        var notes = loadNotes();
         if (editingId) {
-            const idx = notes.findIndex(function(n) { return n.id === editingId; });
+            var idx = notes.findIndex(function(n) { return n.id === editingId; });
             if (idx !== -1) notes[idx].text = text;
         } else {
             notes.push({ id: String(Date.now()) + '-' + Math.random().toString(36).substr(2, 9), text: text });
@@ -435,51 +570,44 @@ document.getElementById('exportBtn').addEventListener('click', function(){
         renderNotes();
         hideAddArea();
     }
-
     function deleteNote(id) {
         saveNotes(loadNotes().filter(function(n) { return n.id !== id; }));
         renderNotes();
     }
-
     function editNote(id) {
-        const note = loadNotes().find(function(n) { return n.id === id; });
+        var note = loadNotes().find(function(n) { return n.id === id; });
         if (note) showAddArea(note.text, id);
     }
-
     document.getElementById('btnAddNote').addEventListener('click', function() { showAddArea(); });
     document.getElementById('btnSaveNote').addEventListener('click', saveNote);
     document.getElementById('btnCancelNote').addEventListener('click', hideAddArea);
-
     document.getElementById('stickyNoteInput').addEventListener('keydown', function(e) {
         if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { saveNote(); }
         if (e.key === 'Escape') { hideAddArea(); }
     });
-
     document.getElementById('stickyNotesList').addEventListener('click', function(e) {
-        const editBtn = e.target.closest('.sticky-note-btn-edit');
-        const delBtn  = e.target.closest('.sticky-note-btn-delete');
+        var editBtn = e.target.closest('.sticky-note-btn-edit');
+        var delBtn  = e.target.closest('.sticky-note-btn-delete');
         if (editBtn) editNote(editBtn.dataset.id);
         if (delBtn)  deleteNote(delBtn.dataset.id);
     });
-
     renderNotes();
 })();
 </script>
 
-<footer style="background: #60a5fa; color: #aaa; padding: 20px; font-family: Arial, sans-serif; margin-top: 50px;">
-  <div style="text-align:center; margin-bottom:15px;">
-    <span style="color: #000;">TR Import OEM, EPC, Exporteur: 699999816 <br>
-    Parking Place: 8618248</span>
+<!-- Footer -->
+<footer class="site-footer">
+  <div class="footer-brand">
+    TR Import OEM, EPC, Exporteur: 699999816 &nbsp;|&nbsp; Parking Place: 8618248
   </div>
-
-  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; max-width: 900px; margin: auto;">
-    <a href="https://www.ksb.com/en-de" target="_blank" class="card">🛒 WEB-Shop</a>
-    <a href="https://my334241-sso.crm.ondemand.com/sap/ap/ui/repository/SAP_UI/HTML5/newclient.html" target="_blank" class="card">💼 C4C</a>
-    <a href="https://www.ksb.com/en-global/contact" target="_blank" class="card">🌐 Global Contact</a>
-    <a href="https://app.kolayik.com/home" target="_blank" class="card">📌 Kolay IK</a>
-    <a href="http://erprapor.ksb.com.tr/reports/browse/KSB%20Satis" target="_blank" class="card">📊 KSB Satış</a>
-    <a href="https://servis.ksb.com.tr/YonetimPaneli/anasayfa" target="_blank" class="card">🛠️ KSB SMT</a>
-    <a href="http://ksbserver:5555/loader.aspx" target="_blank" class="card">📂 KSB CRM</a>
+  <div class="footer-links">
+    <a href="https://www.ksb.com/en-de" target="_blank" class="footer-card">🛒 WEB-Shop</a>
+    <a href="https://my334241-sso.crm.ondemand.com/sap/ap/ui/repository/SAP_UI/HTML5/newclient.html" target="_blank" class="footer-card">💼 C4C</a>
+    <a href="https://www.ksb.com/en-global/contact" target="_blank" class="footer-card">🌐 Global Contact</a>
+    <a href="https://app.kolayik.com/home" target="_blank" class="footer-card">📌 Kolay IK</a>
+    <a href="http://erprapor.ksb.com.tr/reports/browse/KSB%20Satis" target="_blank" class="footer-card">📊 KSB Satış</a>
+    <a href="https://servis.ksb.com.tr/YonetimPaneli/anasayfa" target="_blank" class="footer-card">🛠️ KSB SMT</a>
+    <a href="http://ksbserver:5555/loader.aspx" target="_blank" class="footer-card">📂 KSB CRM</a>
   </div>
 </footer>
 
